@@ -1,7 +1,5 @@
-﻿// Scheduler.cpp: 定义应用程序的入口点。
-//
-
-#include "Task.h"
+﻿
+#include "EnterRoomTask.h"
 #include "Robot.h"
 #include <mutex>
 #include <iostream>
@@ -13,7 +11,7 @@ mutex cout_mutex;
 // Allow one thread print text on stdout.
 void print(string s) {
 	cout_mutex.lock();
-	cout << s << endl;
+	cout << s;
 	cout_mutex.unlock();
 }
 
@@ -26,10 +24,13 @@ int main()
 {
 	print("main thread start");
 
+	Robot* robot = new Robot(1,print);
 
 	for (int i = 0; i < 50; i++) {
-		Task task(i, &print);
-		task.process();
+		 EnterRoomTask* task = new EnterRoomTask(i, &print);
+		
+		robot->setTask(task);
+		robot->run();
 	}
 
 	return 0;

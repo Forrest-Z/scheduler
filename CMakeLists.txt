@@ -6,6 +6,7 @@ project(Scheduler)
 include_directories("include")
 
 file(GLOB_RECURSE SOURCE_FILE
-					src/*)
+					src/*
+					include/*)
 
 add_executable ("${PROJECT_NAME}" "${SOURCE_FILE}")

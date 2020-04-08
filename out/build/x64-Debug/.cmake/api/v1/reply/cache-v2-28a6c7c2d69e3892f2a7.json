@@ -695,7 +695,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "Project"
+			"value" : "Scheduler"
 		},
 		{
 			"name" : "CMAKE_RC_COMPILER",
@@ -1039,6 +1039,30 @@
 		},
 		{
 			"name" : "Project_SOURCE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "F:/VSPrograms/Scheduler"
+		},
+		{
+			"name" : "Scheduler_BINARY_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "F:/VSPrograms/Scheduler/out/build/x64-Debug"
+		},
+		{
+			"name" : "Scheduler_SOURCE_DIR",
 			"properties" : 
 			[
 				{

@@ -26,7 +26,7 @@
 					[
 						0
 					],
-					"name" : "Project",
+					"name" : "Scheduler",
 					"targetIndexes" : 
 					[
 						0
@@ -38,7 +38,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "Scheduler::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-Scheduler-Debug-ab5bf140d67e495a729e.json",
+					"jsonFile" : "target-Scheduler-Debug-fa1697bb1b4394c753ed.json",
 					"name" : "Scheduler",
 					"projectIndex" : 0
 				}

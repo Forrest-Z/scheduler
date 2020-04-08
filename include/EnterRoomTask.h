@@ -12,6 +12,7 @@ public:
 	EnterRoomTask() :id(0), task_print(nullptr) {}
 	EnterRoomTask(int id) :id(id), task_print(nullptr) {}
 	EnterRoomTask(int id, outFunc print) :id(id), task_print(print) {}
+	int getId() { return id; }
 private:
 	int id;
 	outFunc task_print;

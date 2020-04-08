@@ -1,6 +1,7 @@
 ﻿
 #include "EnterRoomTask.h"
 #include "Robot.h"
+#include "Dispatcher.h"
 #include <mutex>
 #include <iostream>
 
@@ -22,15 +23,18 @@ void signal_handle() {
 
 int main()
 {
-	print("main thread start");
+	print("main thread start\n");
 
-	Robot* robot = new Robot(1,print);
+	
+	Dispatcher dispatcher = Dispatcher::GetDispatcher();
+	dispatcher.SetOut(&print); // assign print function to dispatcher
+	dispatcher.init(5, &print); // create 10 robots and assign print function
 
 	for (int i = 0; i < 50; i++) {
 		 EnterRoomTask* task = new EnterRoomTask(i, &print);
-		
-		robot->setTask(task);
-		robot->run();
+		 dispatcher.AddTask(task);
+		//robot->setTask(task);
+		// robot->run();
 	}
 
 	return 0;

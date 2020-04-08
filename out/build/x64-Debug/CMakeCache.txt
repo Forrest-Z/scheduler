@@ -191,12 +191,6 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
 //Value Computed by CMake
-Project_BINARY_DIR:STATIC=F:/VSPrograms/Scheduler/out/build/x64-Debug
-
-//Value Computed by CMake
-Project_SOURCE_DIR:STATIC=F:/VSPrograms/Scheduler
-
-//Value Computed by CMake
 Scheduler_BINARY_DIR:STATIC=F:/VSPrograms/Scheduler/out/build/x64-Debug
 
 //Value Computed by CMake

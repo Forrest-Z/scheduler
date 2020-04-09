@@ -18,7 +18,7 @@ void Robot::run()
 			
 			while (!has_task && running) // wait dispatcher call robot set task function
 			{
-				if (cv.wait_for(ulock, chrono::seconds(1)) == cv_status::timeout) {
+				if (cv.wait_for(ulock, chrono::milliseconds(2)) == cv_status::timeout) {
 					// We timed out, but we keep waiting unless the worker is
 					// stopped by the dispatcher.
 				}

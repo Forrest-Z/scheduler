@@ -38,6 +38,7 @@ void Dispatcher::init(int num, outFunc robot_print)
 	dispatcher_print("Dispatcher: Create " + std::to_string(num) + " robots\n");
 }
 
+
 bool Dispatcher::AddRobot(Robot* robot)
 {
 	bool wait = false;
@@ -65,26 +66,25 @@ bool Dispatcher::AddRobot(Robot* robot)
 void Dispatcher::AddTask(EnterRoomTask* task)
 {
 	robot_mutex.lock(); // allow only one thread to chage robot queue
-	//if (!robot_queue.empty()) {
-	//	
-	//	Robot* robot = robot_queue.front();
-	//	robot->setTask(task); //assign a tassk to this robot
+	if (!robot_queue.empty()) {
+		
+		Robot* robot = robot_queue.front();
+		robot->setTask(task); //assign a tassk to this robot
 
-	//	condition_variable* cv;
-	//	robot->getCondition(cv);
-	//	cv->notify_one();
-	//	robot_queue.pop(); // remove robot from queue	
-	//	robot_mutex.unlock();
-	//	
-	//}
-	//else {
+		condition_variable* cv;
+		robot->getCondition(cv);
+		cv->notify_one();
+		robot_queue.pop(); // remove robot from queue	
+		robot_mutex.unlock();
+		
+	}
+	else {
 		robot_mutex.unlock();
 		// No available robot in robot queue. Add the task in waiting queue
 		task_mutex.lock();		// allow only one thread access task queue
 		task_queue.push(task);  // add task to task queue
 		task_mutex.unlock();
-	//}
-	//task_queue.push(task);
+	}
 	
 }
 

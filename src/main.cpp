@@ -36,7 +36,7 @@ typedef struct room_info {
 	int  occupy_posibility;
 	friend bool operator < (room_info a, room_info b)
 	{
-		return a.occupy_posibility < b.occupy_posibility;   // if a.posibility > b.posibility, a > b, a is near the top
+		return a.occupy_posibility > b.occupy_posibility;   // if a.posibility > b.posibility, a > b, a is near the top
 	}
 } Room_info;
 
@@ -84,13 +84,12 @@ int main()
 				int id = room.id;
 						if  (room_entered.find(id) == room_entered.end() ){
 							// if the room is not entered.
-							 
+							int time_point = table_unit[cycle].time;
 							  lock_print("Please enter room " + std::to_string(id) + 
-											" at time " + std::to_string(table_unit[cycle].time) + "\n"); // print the room and time 
-								EnterRoomTask* task = new EnterRoomTask(id, &lock_print);
+											" at time " + std::to_string(time_point) + "\n"); // print the room and time 
+								EnterRoomTask* task = new EnterRoomTask(id,time_point, &lock_print);
 								Dispatcher::AddTask(task);  // add task to dispatcher
 								room_entered.insert(id);	//add room id to set
-								
 								break; // jump out troom.idhe loop
 						}
 						else {

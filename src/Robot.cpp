@@ -9,7 +9,6 @@ void Robot::run()
 	{
 		if (has_task) {
 			
-			//robot_print("Robot " + std::to_string(id) + ": ");
 			task->process(id);
 
 			has_task = false;

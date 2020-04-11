@@ -15,16 +15,11 @@ void Robot::run()
 		}
 
 		if (Dispatcher::AddRobot(this)) {
-			
+			// When no task in task queue, wait that task thread run Disparture 
 			while (!has_task && running) // wait dispatcher call robot set task function
-			{
-				if (cv.wait_for(ulock, chrono::milliseconds(2)) == cv_status::timeout) {
-					// We timed out, but we keep waiting unless the worker is
-					// stopped by the dispatcher.
-				}
+			{			
+				cv.wait(ulock);	// block the thread until it was assigned to a task.
 			}
-			// if a robot add itself to queue, wait for a signal from dispatcher
-		
 		}
 	}
 

@@ -30,7 +30,7 @@ void Dispatcher::init(int num, outFunc robot_print)
 	thread* thread;
 	for (int i = 0; i < num; i++) {
 		robot = new Robot(i, robot_print );
-		robot_queue.push(robot);
+		AllRobots.push_back(robot);
 		thread = new std::thread(&Robot::run, robot);
 		threads.push_back(thread);
 	}
@@ -73,7 +73,7 @@ void Dispatcher::AddTask(EnterRoomTask* task)
 
 		condition_variable* cv;
 		robot->getCondition(cv);
-		cv->notify_one();
+		cv->notify_one();  // unblock one waiting threads.
 		robot_queue.pop(); // remove robot from queue	
 		robot_mutex.unlock();
 		

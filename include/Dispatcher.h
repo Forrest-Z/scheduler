@@ -22,12 +22,14 @@ public:
 	static void SetOut(outFunc lock_print) { dispatcher_print = lock_print; }
 	static Dispatcher GetDispatcher() { return dispatcher; }
 	static void stop();
+	static void SortTaskQueue();
+	static bool compareTask(const EnterRoomTask& a, const EnterRoomTask& b);
 private:
 	static mutex robot_mutex;
 	static mutex task_mutex;
 	static outFunc dispatcher_print;
 	static queue<Robot*> robot_queue; // Store waiting robot
-	static queue<EnterRoomTask*> task_queue; // Store to do task 
+	static deque<EnterRoomTask*> task_queue; // Store to do task 
 	static vector<Robot*> AllRobots; // Store robots created by dispatcher init process
 	static vector<thread*> threads;
 	static Dispatcher dispatcher;

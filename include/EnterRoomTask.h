@@ -27,6 +27,10 @@ public:
 	void getRoomAndTime(Room_Time& rt) {
 		rt = this->rt;
 	}
+	bool operator < (EnterRoomTask const& other) {
+		return this->rt.day_of_week < other.rt.day_of_week;
+	}
+
 private:
 	int room_id;
 	int time_point;

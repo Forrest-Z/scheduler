@@ -22,14 +22,32 @@ static std::string day_of_weeks[7] = {
 
 static std::map<string, int>  day_of_weeks_map;
 
+typedef struct room_info {
+	int id;
+	int  occupy_posibility;
+	friend bool operator < (room_info a, room_info b)
+	{
+		return a.occupy_posibility > b.occupy_posibility;   // if a.posibility > b.posibility, a > b, a is near the top
+	}
+} Room_info;
+
+
 
 typedef struct Room_Time {
 	int room_id;
 	int day_of_week;
 	int time;
 	friend bool operator < (Room_Time rt1, Room_Time rt2) {
-
-		return rt1.time > rt2.time; // ealier time will be in the frount
+		if (rt1.day_of_week < rt2.day_of_week) {
+			return true;
+		}
+		else if (rt1.day_of_week == rt2.day_of_week) {
+			return rt1.time < rt2.time; // ealier time will be in the frount
+		}
+	else {
+			return false;
+		}
+		
 	}
 }Room_Time;
 

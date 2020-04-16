@@ -9,7 +9,7 @@ mutex Dispatcher::task_mutex;
 Dispatcher Dispatcher::dispatcher;
 outFunc Dispatcher::dispatcher_print;
 queue<Robot*> Dispatcher::robot_queue; // Store waiting robot
-queue<EnterRoomTask*> Dispatcher::task_queue; // Store to do task 
+deque<EnterRoomTask*> Dispatcher::task_queue; // Store to do task 
 vector<Robot*>Dispatcher::AllRobots; // Store robots created by dispatcher init process
 vector<thread*> Dispatcher::threads; // Store threads created by dispatcher init process
 
@@ -45,7 +45,7 @@ bool Dispatcher::AddRobot(Robot* robot)
 		
 		EnterRoomTask* task = task_queue.front();
 		robot->setTask(task);
-		task_queue.pop();
+		task_queue.pop_front();
 		task_mutex.unlock();
 	}
 	else {
@@ -79,7 +79,7 @@ void Dispatcher::AddTask(EnterRoomTask* task)
 		robot_mutex.unlock();
 		// No available robot in robot queue. Add the task in waiting queue
 		task_mutex.lock();		// allow only one thread access task queue
-		task_queue.push(task);  // add task to task queue
+		task_queue.push_back(task);  // add task to task queue
 		task_mutex.unlock();
 	}
 	
@@ -90,5 +90,17 @@ void Dispatcher::stop()
 	for (int i = 0; i < threads.size(); i++) {
 		threads[i]->join();
 	}
+}
+
+bool compare( EnterRoomTask* a, EnterRoomTask* b) {
+	Room_Time rt1, rt2;
+	a->getRoomAndTime(rt1);
+	b->getRoomAndTime(rt2);
+	return rt1<rt2;
+}
+
+void Dispatcher::SortTaskQueue() {
+
+	sort(task_queue.begin(), task_queue.end(),compare);
 }
 

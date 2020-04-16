@@ -10,6 +10,7 @@
 #include <set>
 #include <fstream>
 #include <time.h>
+#include <global.h>
 
 using namespace std;
 
@@ -50,14 +51,14 @@ typedef struct table {
 
 static void generate_simulation() {
 	ofstream fs; 
-	fs.open("../simulation/door_status_room_1.txt"); // create a output stream, which open file  for writing
+	fs.open("../simulation/door_status_room_3.txt"); // create a output stream, which open file  for writing
 	if (!fs.is_open()) {
 		cout << "unable to open file"<<endl;
 		return;
 	}
 	int start_year = 2020, start_month = 4, start_day = 10, start_hour = 8;
-	int time_interval = 3;
-	int num_of_measurement = 100;
+	int time_interval = 1;
+	int num_of_measurement = 500;
 
 	time_t raw_time;
 	struct tm* time_info;
@@ -72,7 +73,7 @@ static void generate_simulation() {
 	for (int i = 0; i < num_of_measurement; i++) {
 
 		// determin door closed/opened time
-		std::string status = (time_info->tm_hour > 12  && time_info->tm_hour < 18)? "opened" : "closed";  
+		std::string status = (time_info->tm_hour > 12 && time_info->tm_hour < 18)? "opened" : "closed";  
 		
 		cout << status << " "<<ctime(&raw_time);
 		fs << status << " " << ctime(&raw_time);
@@ -92,7 +93,7 @@ static void generate_simulation() {
 
 int main()
 {
-	// generate_simulation();
+	//generate_simulation();
 	//Table_unit table_unit[num_of_time_point] = { // assume each room post a enter room task
 	//						{8, {{ 0, 10}, {1,70},{2, 80},{3, 10},{4, 0}} },		 
 	//						{11, {{ 0, 60}, {1,80},{2, 80},{3, 50},{4, 20}} },
@@ -107,53 +108,24 @@ int main()
 	lock_print("main thread start\n");
 
 	Dispatcher dispatcher = Dispatcher::GetDispatcher();
-	dispatcher.SetOut(&lock_print);	 // assign lock_print function to dispatcher
+	//dispatcher.SetOut(&lock_print);	 // assign lock_print function to dispatcher
+	dispatcher.init(num_of_robot, &lock_print);	 // create 2 robots and assign lock_print function
 	
-	Robot* robot = new Robot(1, &lock_print);
-	bool status   = robot->getDoorStatusFromFile(1, 8, 5,"../simulation/door_status_room_1.txt");
-	//dispatcher.init(num_of_robot, &lock_print);	 // create 2 robots and assign lock_print function
+	const int num_of_task = 30;
 
+	for (int i = 0; i < num_of_task; i++) {
+		Room_Time rt;
+		rt.day_of_week = rand() % (5 - 1 + 1) + 1; // create a day( monday - friday)
+		rt.room_id = rand() % (3 - 1 + 1) + 1; // create a room id(1-3)
+		rt.time = rand() % (18 - 8 + 1) + 8; // create a time(8am -18pm)
+		EnterRoomTask* task = new EnterRoomTask(&lock_print);
+		task->setRoomAndTime(rt);
+		Dispatcher::AddTask(task);
+	}
 
-	//int cycle = 0;
-	//std::set<int> room_entered;
+	this_thread::sleep_for(chrono::seconds(5));
 
-	//while (cycle < num_of_time_point) {
+	Dispatcher::stop();
+	cout << "Clean-up done.\n";
 
-	//	priority_queue<room_info> possibility_priority_queue; // put all possibility value in queue;
-	//	for (int i = 0; i < num_of_room; i++) {
-	//		possibility_priority_queue.push(table_unit[cycle].room_info[i]);
-	//	}
-
-	//	while(true){
-
-	//			 //get the room with maximal possibility at this time point
-	//			const room_info room = possibility_priority_queue.top();
-	//			int id = room.id;
-	//					if  (room_entered.find(id) == room_entered.end() ){
-	//						// if the room is not entered.
-	//						int time_point = table_unit[cycle].time;
-	//						  lock_print("Please enter room " + std::to_string(id) + 
-	//										" at time " + std::to_string(time_point) + "\n"); // print the room and time 
-	//							EnterRoomTask* task = new EnterRoomTask(id,time_point, &lock_print);
-	//							Dispatcher::AddTask(task);  // add task to dispatcher
-	//							room_entered.insert(id);	//add room id to set
-	//							break; // jump out troom.idhe loop
-	//					}
-	//					else {
-	//						// if this room is already entered. remove it from priority queue
-	//						possibility_priority_queue.pop();
-	//					}
-
-	//	}
-	//	cycle++;
-	//}
-	//
-
-	//this_thread::sleep_for(chrono::seconds(20));
-
-	//// Cleanup.
-	//Dispatcher::stop();
-	//cout << "Clean-up done.\n";
-
-	//return 0;
 }

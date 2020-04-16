@@ -2,6 +2,7 @@
 
 #include "EnterRoomTask.h"
 #include "Robot.h"
+
 #include <queue>
 #include <vector>
 #include <thread>
@@ -14,7 +15,7 @@ class Dispatcher {
 	typedef void (*outFunc)(string s); // function pointer to lock_print function
 	
 public:
-	static void init(int num);  // Create num robot thread
+	//static void init(int num);  // Create num robot thread
 	static void init(int num, outFunc robot_print);
 	static bool AddRobot(Robot* robot);	// Add robot to robot queue
 	static void AddTask(EnterRoomTask* task); // Add task to task queue

@@ -1,4 +1,5 @@
 #include "Dispatcher.h"
+#include "global.h"
 #include <thread>
 
 using namespace std;
@@ -12,20 +13,16 @@ queue<EnterRoomTask*> Dispatcher::task_queue; // Store to do task
 vector<Robot*>Dispatcher::AllRobots; // Store robots created by dispatcher init process
 vector<thread*> Dispatcher::threads; // Store threads created by dispatcher init process
 
-void Dispatcher::init(int num)
-{
-	Robot* robot;
-	thread* thread;
-	for (int i = 0; i < num; i++) {
-		robot = new Robot(i);
-		AllRobots.push_back(robot);
-		thread = new std::thread(&Robot::run, robot);
-		threads.push_back(thread);
-	}
-}
-
 void Dispatcher::init(int num, outFunc robot_print)
 {
+	day_of_weeks_map.insert(pair<string, int>("Mon", 1));
+	day_of_weeks_map.insert(pair<string, int>("Tue", 2));
+	day_of_weeks_map.insert(pair<string, int>("Wed", 3));
+	day_of_weeks_map.insert(pair<string, int>("Thu", 4));
+	day_of_weeks_map.insert(pair<string, int>("Fri", 5));
+	day_of_weeks_map.insert(pair<string, int>("Sat", 6));
+	day_of_weeks_map.insert(pair<string, int>("Sun", 0));
+
 	Robot* robot;
 	thread* thread;
 	for (int i = 0; i < num; i++) {

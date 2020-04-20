@@ -1,7 +1,6 @@
 #include "Dispatcher.h"
 //#include "global.h"
 #include <thread>
-
 using namespace std;
 
 mutex Dispatcher::robot_mutex;
@@ -15,26 +14,37 @@ vector<thread*> Dispatcher::threads; // Store threads created by dispatcher init
 
 void Dispatcher::init(int num, outFunc out)
 {
-	day_of_weeks_map.insert(pair<string, int>("Mon", 1));
-	day_of_weeks_map.insert(pair<string, int>("Tue", 2));
-	day_of_weeks_map.insert(pair<string, int>("Wed", 3));
-	day_of_weeks_map.insert(pair<string, int>("Thu", 4));
-	day_of_weeks_map.insert(pair<string, int>("Fri", 5));
-	day_of_weeks_map.insert(pair<string, int>("Sat", 6));
-	day_of_weeks_map.insert(pair<string, int>("Sun", 0));
+	SetOut(out);
+	CreateRobots(num);
+}
 
+void Dispatcher::CreateRobots(int num) {
+	
 	Robot* robot;
 	thread* thread;
 	for (int i = 0; i < num; i++) {
-		robot = new Robot(i,out);
+		robot = new Robot(i,dispatcher_print);
 		AllRobots.push_back(robot);
 		thread = new std::thread(&Robot::run, robot);
 		threads.push_back(thread);
 	}
-	dispatcher_print = out;
 	dispatcher_print("Dispatcher: Create " + std::to_string(num) + " robots\n");
 }
 
+void Dispatcher::CreateRandomTasks(int num,time_t start_time) {
+
+	for (int i = 0; i < num; i++) {
+		Room_Time rt;
+		// rt.day_of_week = rand() % (5 - 1 + 1) + 1; // create a day( monday - friday)
+		rt.room_id = rand() % (3 - 1 + 1) + 1; // create a room id(1-3)
+		struct tm* tmp = localtime(&(rt.calendar_time));
+			// rand() % (18 - 8 + 1) + 8; // create a time(8am -18pm)
+		EnterRoomTask* task = new EnterRoomTask(dispatcher_print);
+		task->setRoomAndTime(rt);
+		Dispatcher::AddTask(task);
+		Dispatcher::SortTaskQueue();
+	}
+}
 
 bool Dispatcher::AddRobot(Robot* robot)
 {

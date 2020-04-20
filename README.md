@@ -1,5 +1,11 @@
 It is a Visual studio CMake program
 
+
+Robot work flow:
+
+![robot](./image/robot_workflow.png)
+
+
 The first week:
 
 ![result](./image/result1.png)
@@ -7,10 +13,6 @@ The first week:
 The second week:
 
 ![result](./image/result2.png)
-
-Robot work flow:
-
-![robot](./image/robot_workflow.png)
 
 Disparture(centralized poor) work flow
 

@@ -6,7 +6,6 @@
 //#include "Robot.h"
 using namespace std;
 
-
 class Robot;
 typedef void (*outFunc)(string s); // function pointer to lock_print function
 
@@ -33,7 +32,6 @@ public:
 
 private:
 	int room_id;
-	int time_point;
 	outFunc task_print;
 	Room_Time rt;
 };

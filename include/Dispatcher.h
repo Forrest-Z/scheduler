@@ -22,6 +22,8 @@ public:
 	static void SetOut(outFunc lock_print) { dispatcher_print = lock_print; }
 	static Dispatcher GetDispatcher() { return dispatcher; }
 	static void stop();
+	static void CreateRobots(int num);
+	static void CreateRandomTasks(int num, time_t start_time);
 	static void SortTaskQueue();
 	static bool compareTask(const EnterRoomTask& a, const EnterRoomTask& b);
 private:

@@ -2,25 +2,11 @@
 
 #include <string>
 #include <map>
-#include <fstream>
+
 //#include "Robot.h"
 //#include "EnterRoomTask.h"
 
 using namespace std;
-
-
-
-static std::string day_of_weeks[7] = {
-	"Sun",
-	"Mon",
-	"Tue",
-	"Wed",
-	"Thu",
-	"Fri",
-	"Sat"
-};
-
-static std::map<string, int>  day_of_weeks_map;
 
 typedef struct room_info {
 	int id;
@@ -31,12 +17,11 @@ typedef struct room_info {
 	}
 } Room_info;
 
-
-
 typedef struct Room_Time {
 	int room_id;
 	int day_of_week;
 	int time;
+	time_t calendar_time;
 	friend bool operator < (Room_Time rt1, Room_Time rt2) {
 		if (rt1.day_of_week < rt2.day_of_week) {
 			return true;
@@ -56,28 +41,18 @@ typedef struct {
 	int opened_count;
 }Door_cnt;
 
-static bool getDoorStatusFromFile(Room_Time rt, const char* path) {
-	ifstream ifs; // steam to read from file
-	ifs.open(path);
-	if (!ifs.is_open()) {
-		return false;
-	}
-	std::string status, wday, month, year, str, blank, hour_minute_second;
-	int day_of_month, hour, minute, second;
-	while (!ifs.eof()) {
-		ifs >> status >> wday >> month >> day_of_month >> hour;
-		ifs.ignore(); // ignore delimiter ":"
-		ifs >> minute;
-		ifs.ignore(); // ignore delimiter ":"
-		ifs >> second >> year;
-		int equal = day_of_weeks[rt.day_of_week].compare(wday);
-		if (rt.time == hour && equal == 0) {	// 
-			//robot_print("Door " + status + "\n");
-			ifs.close();
-			return status.compare("closed");
-		}
-	}
-	ifs.close();
-	return false;
-}
+typedef void (*outFunc)(string s); // function pointer to lock_print function
+
+class Util {
+	
+public:
+	Util(outFunc out);
+	static bool GetDoorStatusFromFile(Room_Time rt, const char* path);
+	static map<string, int>  day_of_weeks_map;
+	static map<string, int> months_map;
+	static std::string day_of_weeks[7];
+	static void Generate_simulation_door_status(int num_of_rooms, int num_of_measurements, time_t start_time);
+private:
+	static outFunc global_print;
+};
 

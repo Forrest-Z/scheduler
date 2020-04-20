@@ -20,12 +20,12 @@ void Robot::run()
 			task->process(id,result);
 			has_task = false;
 		}
-
-		Dispatcher::AddRobot(this);
-
-		while (!has_task && running) // wait dispatcher call robot set task function
-		{			
+		if (Dispatcher::AddRobot(this)) {
+			// When no task in task queue, wait that task thread run Disparture 
+			while (!has_task && running) // wait dispatcher call robot set task function
+			{
 				cv.wait(ulock);	// block the thread until it was assigned to a task.
+			}
 		}
 		
 	}

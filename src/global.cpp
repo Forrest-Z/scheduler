@@ -4,19 +4,14 @@
 #include <time.h>
 
 map<string, int>  Util::day_of_weeks_map;
-map<string, int> Util::months_map;
+map<string, int> Util::monthes_map;
 std::string Util::day_of_weeks[7];
+std::string monthes[13];
 outFunc Util::global_print;
 
 Util::Util(outFunc out){
 	global_print = out;
-	day_of_weeks[0] = "Sun";
-	day_of_weeks[1]  = "Mon";
-	day_of_weeks[2] = "Tue";
-	day_of_weeks[3] = "Wed";
-	day_of_weeks[4] = "Thu";
-	day_of_weeks[5] = "Fri";
-	day_of_weeks[6] = "Sat";
+	
 	day_of_weeks_map.insert(pair<string, int>("Mon", 1));
 	day_of_weeks_map.insert(pair<string, int>("Tue", 2));
 	day_of_weeks_map.insert(pair<string, int>("Wed", 3));
@@ -24,18 +19,18 @@ Util::Util(outFunc out){
 	day_of_weeks_map.insert(pair<string, int>("Fri", 5));
 	day_of_weeks_map.insert(pair<string, int>("Sat", 6));
 	day_of_weeks_map.insert(pair<string, int>("Sun", 0));
-	months_map.insert(pair<string, int>("Jan", 1));
-	months_map.insert(pair<string, int>("Feb", 2));
-	months_map.insert(pair<string, int>("Mar", 3));
-	months_map.insert(pair<string, int>("Apr", 4));
-	months_map.insert(pair<string, int>("May", 5));
-	months_map.insert(pair<string, int>("Jun", 6));
-	months_map.insert(pair<string, int>("Jul", 7));
-	months_map.insert(pair<string, int>("Aug", 8));
-	months_map.insert(pair<string, int>("Sep", 9));
-	months_map.insert(pair<string, int>("Oct", 10));
-	months_map.insert(pair<string, int>("Nov", 11));
-	months_map.insert(pair<string, int>("Dec", 12));
+	monthes_map.insert(pair<string, int>("Jan", 1));
+	monthes_map.insert(pair<string, int>("Feb", 2));
+	monthes_map.insert(pair<string, int>("Mar", 3));
+	monthes_map.insert(pair<string, int>("Apr", 4));
+	monthes_map.insert(pair<string, int>("May", 5));
+	monthes_map.insert(pair<string, int>("Jun", 6));
+	monthes_map.insert(pair<string, int>("Jul", 7));
+	monthes_map.insert(pair<string, int>("Aug", 8));
+	monthes_map.insert(pair<string, int>("Sep", 9));
+	monthes_map.insert(pair<string, int>("Oct", 10));
+	monthes_map.insert(pair<string, int>("Nov", 11));
+	monthes_map.insert(pair<string, int>("Dec", 12));
 }
 
 
@@ -84,17 +79,13 @@ bool Util::GetDoorStatusFromFile(Room_Time rt, const char* path) {
 	struct tm tm;
 	while (!ifs.eof()) {
 		ifs >> status >> wday_str >> month_str >> tm.tm_mday >> tm.tm_hour;
-		tm.tm_mon = day_of_weeks_map[month_str];
-		//ifs >> status >> wday >> month >> day_of_month >> hour;
+		tm.tm_mon = monthes_map[month_str] - 1;
 		ifs.ignore(); // ignore delimiter ":"
-		//ifs >> minute;
 		ifs >> tm.tm_min;
 		ifs.ignore(); // ignore delimiter ":"
-		//ifs >> second >> year;
 		ifs >> tm.tm_sec >> tm.tm_year;
-		//int equal = day_of_weeks[rt.day_of_week].compare(wday);
-		//if (rt.time == hour && equal == 0) {	// 
-			//robot_print("Door " + status + "\n");
+		tm.tm_year -= 1900;
+		struct tm* t = localtime(&rt.calendar_time);
 		double diff = difftime(rt.calendar_time, mktime(&tm));
 		if (diff < 1800) {  //  time different is small than 30min 
 			ifs.close();

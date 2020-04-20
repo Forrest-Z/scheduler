@@ -40,7 +40,7 @@ int main()
 	start.tm_sec = 0;
 
 	Util util(&lock_print);
-	util.Generate_simulation_door_status(5, 500,mktime(&start)); // create 500 measurements for 5 rooms
+	//util.Generate_simulation_door_status(5, 500,mktime(&start)); // create 500 measurements for 5 rooms
 
 	signal(SIGINT, &sigint_handler);
 	lock_print("main thread start\n");

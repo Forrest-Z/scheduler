@@ -49,8 +49,9 @@ public:
 	Util(outFunc out);
 	static bool GetDoorStatusFromFile(Room_Time rt, const char* path);
 	static map<string, int>  day_of_weeks_map;
-	static map<string, int> months_map;
+	static map<string,int> monthes_map;
 	static std::string day_of_weeks[7];
+	static std::string monthes[13];
 	static void Generate_simulation_door_status(int num_of_rooms, int num_of_measurements, time_t start_time);
 private:
 	static outFunc global_print;

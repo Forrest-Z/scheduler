@@ -5,23 +5,19 @@
 #include <chrono>
 #include "global.h"
 #include "Dispatcher.h"
+#include <strstream>
+
 using namespace std;
 
 void EnterRoomTask::process(int robot_id,bool& measure_door)
 {
-	char path[50];
+	char path[50], buf[100];
 	bool status;
+	strstream stream;
 	sprintf(path, "../simulation/door_status_room_%d.txt", rt.room_id);
-	//task_print("time " + std::to_string(time_point) + ": robot "+ std::to_string(robot_id) + " enter room " + std::to_string(room_id)+"\n");
 	status = Util::GetDoorStatusFromFile(rt, path);
-	task_print("\n" + Util::day_of_weeks[rt.day_of_week] +  " time " + std::to_string(rt.time) + ": robot " + std::to_string(robot_id) + " enter room " + std::to_string(rt.room_id) + ", door " + (status? "open" : "close") + "\n");
-
-	// Door is open, add a task 
-	if (status) {
-		task_print(" Create a task on next " + Util::day_of_weeks[rt.day_of_week] + " time " + std::to_string(rt.time) + " for room " + std::to_string(rt.room_id)+ "\n");
-		Dispatcher::AddTask(new EnterRoomTask(task_print, rt));
-	}
-	
-	measure_door = status;
+		
+	sprintf(buf,"room %d door %s %s\n",rt.room_id, status ? "opened" : "closed", ctime(&rt.calendar_time));
+	task_print(buf);
 }
  

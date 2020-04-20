@@ -35,8 +35,11 @@ void Dispatcher::CreateRandomTasks(int num,time_t start_time) {
 
 	for (int i = 0; i < num; i++) {
 		Room_Time rt;
+		long increase_sec = rand() % (60 * 60 * 24 * 30) +(60*60);
+		rt.calendar_time = start_time + increase_sec;
 		// rt.day_of_week = rand() % (5 - 1 + 1) + 1; // create a day( monday - friday)
 		rt.room_id = rand() % (3 - 1 + 1) + 1; // create a room id(1-3)
+		struct tm* tmp1 = localtime(&(start_time));
 		struct tm* tmp = localtime(&(rt.calendar_time));
 			// rand() % (18 - 8 + 1) + 8; // create a time(8am -18pm)
 		EnterRoomTask* task = new EnterRoomTask(dispatcher_print);

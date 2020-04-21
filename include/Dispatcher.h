@@ -2,7 +2,7 @@
 
 #include "EnterRoomTask.h"
 #include "Robot.h"
-
+#include <set>
 #include <queue>
 #include <vector>
 #include <thread>
@@ -24,8 +24,8 @@ public:
 	static void stop();
 	static void CreateRobots(int num);
 	static void CreateRandomTasks(int num, time_t start_time);
-	static void SortTaskQueue();
-	static bool compareTask(const EnterRoomTask& a, const EnterRoomTask& b);
+	static bool CompareTaskCost(pair<EnterRoomTask*, int>& pair1, pair<EnterRoomTask*, int>& pair2);
+	static void AssignTaskToRobot(Robot* robot);
 private:
 	static mutex robot_mutex;
 	static mutex task_mutex;

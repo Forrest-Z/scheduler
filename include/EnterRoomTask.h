@@ -26,12 +26,9 @@ public:
 	void getRoomAndTime(Room_Time& rt) {
 		rt = this->rt;
 	}
-	bool operator < (EnterRoomTask const& other) {
-		return this->rt.day_of_week < other.rt.day_of_week;
-	}
-
-private:
-	int room_id;
-	outFunc task_print;
 	Room_Time rt;
+	int room_id;
+private:
+	outFunc task_print;
+
 };

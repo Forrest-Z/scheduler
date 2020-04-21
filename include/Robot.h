@@ -29,11 +29,16 @@ public:
 	void Write_data_in_occ_map(int room_id, int time, int day_of_week);
 	bool getDoorStatusFromFile(int room, int time, int day_of_week, const char* path);
 	//bool getDoorStatusFromFile(Room_Time rt, const char* path);
-private:
+
 	int id;
-	bool has_task; 
+	bool has_task;
 	bool running;
 	EnterRoomTask* task;
+	int getCurrentRoomId() { return has_task ? task->room_id: 0; }
+	int getCurrentTime() { return has_task ? task->rt.calendar_time : Util::start_time; } // start time if does't have a current task
+private:
+	
+	
 	outFunc robot_print;
 	condition_variable cv;
 	mutex mtx;

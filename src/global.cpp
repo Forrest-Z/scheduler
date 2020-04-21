@@ -8,6 +8,7 @@ map<string, int> Util::monthes_map;
 std::string Util::day_of_weeks[7];
 std::string monthes[13];
 outFunc Util::global_print;
+time_t Util::start_time;
 
 Util::Util(outFunc out){
 	global_print = out;
@@ -34,7 +35,8 @@ Util::Util(outFunc out){
 }
 
 
-void Util::Generate_simulation_door_status(int num_of_rooms, int num_of_measurements,time_t start_time) {
+void Util::Generate_simulation_door_status(int num_of_rooms, int num_of_measurements,time_t start) {
+	start_time = start;
 	for (int i = 0; i < num_of_rooms; i++) {
 		ofstream fs;
 		char path[50];
@@ -46,7 +48,7 @@ void Util::Generate_simulation_door_status(int num_of_rooms, int num_of_measurem
 		}
 
 		int time_interval = 1;
-		struct tm* current_time = localtime(&start_time);
+		struct tm* current_time = localtime(&start);
 		time_t raw_time;
 		for (int i = 0; i < num_of_measurements; i++) {
 

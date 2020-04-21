@@ -19,21 +19,7 @@ typedef struct room_info {
 
 typedef struct Room_Time {
 	int room_id;
-	int day_of_week;
-	int time;
 	time_t calendar_time;
-	friend bool operator < (Room_Time rt1, Room_Time rt2) {
-		if (rt1.day_of_week < rt2.day_of_week) {
-			return true;
-		}
-		else if (rt1.day_of_week == rt2.day_of_week) {
-			return rt1.time < rt2.time; // ealier time will be in the frount
-		}
-	else {
-			return false;
-		}
-		
-	}
 }Room_Time;
 
 typedef struct {
@@ -53,6 +39,7 @@ public:
 	static std::string day_of_weeks[7];
 	static std::string monthes[13];
 	static void Generate_simulation_door_status(int num_of_rooms, int num_of_measurements, time_t start_time);
+	static time_t start_time;
 private:
 	static outFunc global_print;
 };

@@ -28,7 +28,7 @@ EnterRoomTask::EnterRoomTask(outFunc out)
 }
 
 
-void EnterRoomTask::process(int robot_id,bool& measure_door)
+bool EnterRoomTask::process(int robot_id)
 {
 	char path[50], buf[100];
 	bool status;
@@ -38,5 +38,6 @@ void EnterRoomTask::process(int robot_id,bool& measure_door)
 	sprintf(buf,"[Robot %d] [task %.3d] [room %d] [door %s] %s\n",robot_id,
 		this->task_id, rt.room_id, status ? "opened" : "closed", ctime(&rt.calendar_time));
 	task_print(buf);
+	return status; // return door status
 }
  

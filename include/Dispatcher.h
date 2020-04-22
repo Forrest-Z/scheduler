@@ -19,6 +19,7 @@ public:
 	static void init(int num, outFunc robot_print);
 	static bool AddRobot(Robot* robot);	// Add robot to robot queue
 	static void AddTask(EnterRoomTask* task); // Add task to task queue
+	static void ReturnTask(EnterRoomTask* task);
 	static void SetOut(outFunc lock_print) { dispatcher_print = lock_print; }
 	static Dispatcher GetDispatcher() { return dispatcher; }
 	static void stop();

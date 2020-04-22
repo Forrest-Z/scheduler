@@ -14,8 +14,10 @@ void Robot::run()
 			//task->getRoomAndTime(rt);
 			//bool status = getDoorStatusFromFile(rt, "../simulation/door_status_room_1.txt"); // measure door status
 			//task->process(id,status);
-			bool result;
-			task->process(id,result);
+			bool result = task->process(id);
+			if (!result) {		
+				Dispatcher::ReturnTask(task);
+			}
 			has_task = false;
 		}
 		if (Dispatcher::AddRobot(this)) {

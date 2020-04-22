@@ -11,7 +11,7 @@ class Robot;
 class EnterRoomTask {
 public:
 	//void process(int robot_id, bool status);
-	void process(int robot_id, bool& measure_door);
+	bool process(int robot_id);
 	//void process(Robot* robot);
 	EnterRoomTask();
 	EnterRoomTask(outFunc out);

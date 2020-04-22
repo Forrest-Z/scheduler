@@ -8,15 +8,6 @@
 
 using namespace std;
 
-typedef struct room_info {
-	int id;
-	int  occupy_posibility;
-	friend bool operator < (room_info a, room_info b)
-	{
-		return a.occupy_posibility > b.occupy_posibility;   // if a.posibility > b.posibility, a > b, a is near the top
-	}
-} Room_info;
-
 typedef struct Room_Time {
 	int room_id;
 	time_t calendar_time;
@@ -40,6 +31,7 @@ public:
 	static std::string monthes[13];
 	static void Generate_simulation_door_status(int num_of_rooms, int num_of_measurements, time_t start_time);
 	static time_t start_time;
+	static const long TASK_DELAY_SEC = 10800; // 3 hours
 private:
 	static outFunc global_print;
 };

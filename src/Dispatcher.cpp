@@ -102,6 +102,20 @@ bool Dispatcher::AddRobot(Robot* robot)
 	return false;
 }
 
+void Dispatcher::ReturnTask(EnterRoomTask* task) {
+	
+	struct tm* tmp = localtime(&(task->rt.calendar_time));
+	if ((tmp->tm_hour ) > 17) {  // if it is already 17pm, run task at 8 am tomorrow
+															// otherwise this task 3 hours later 
+		tmp->tm_hour =  8;
+		tmp->tm_mday++;
+	}
+	else {
+		tmp->tm_hour +=3;
+	}
+	task->rt.calendar_time = mktime(tmp);
+	AddTask(task);
+}
 void Dispatcher::AddTask(EnterRoomTask* task)
 {
 	robot_mutex.lock(); // allow only one thread to chage robot queue

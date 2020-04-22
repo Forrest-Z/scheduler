@@ -38,7 +38,7 @@ void Dispatcher::CreateRandomTasks(int num,time_t start_time) {
 	int cnt = 0;
 	while(cnt < num) {
 		Room_Time rt;
-		long increase_sec = rand() *30;
+		long increase_sec = rand() * 18;
 		rt.calendar_time = start_time + increase_sec;
 		rt.room_id = rand() % 5; // create a room id(0-4)
 		struct tm* t = localtime(&(rt.calendar_time));

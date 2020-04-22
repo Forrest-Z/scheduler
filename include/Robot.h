@@ -30,7 +30,7 @@ public:
 	bool running;
 	EnterRoomTask* task;
 	int getCurrentRoomId() { return has_task ? task->rt.room_id: 0; }
-	int getCurrentTime() { return has_task ? task->rt.calendar_time : Util::start_time; } // start time if does't have a current task
+	time_t getCurrentTime() { return has_task ? task->rt.calendar_time : Util::start_time; } // start time if does't have a current task
 private:
 	
 	

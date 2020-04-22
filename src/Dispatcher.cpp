@@ -35,19 +35,20 @@ void Dispatcher::CreateRobots(int num) {
 }
 
 void Dispatcher::CreateRandomTasks(int num,time_t start_time) {
-
-	for (int i = 0; i < num; i++) {
+	int cnt = 0;
+	while(cnt < num) {
 		Room_Time rt;
-		long increase_sec = rand() *79;
+		long increase_sec = rand() *30;
 		rt.calendar_time = start_time + increase_sec;
-		// rt.day_of_week = rand() % (5 - 1 + 1) + 1; // create a day( monday - friday)
-		rt.room_id = rand() % (3 - 1 + 1) + 1; // create a room id(1-3)
-		struct tm* tmp1 = localtime(&(start_time));
-		struct tm* tmp = localtime(&(rt.calendar_time));
-			// rand() % (18 - 8 + 1) + 8; // create a time(8am -18pm)
-		EnterRoomTask* task = new EnterRoomTask(dispatcher_print);
-		task->setRoomAndTime(rt);
-		Dispatcher::AddTask(task);
+		rt.room_id = rand() % 5; // create a room id(0-4)
+		struct tm* t = localtime(&(rt.calendar_time));
+		if (t->tm_wday > 0 && t->tm_wday < 6 && t->tm_hour > 9 && t->tm_hour < 20) {
+			// filter task on Monday to Friday from 9 am to 20 pm
+			EnterRoomTask* task = new EnterRoomTask(dispatcher_print);
+			task->setRoomAndTime(rt);
+			Dispatcher::AddTask(task);
+			cnt++;
+		}
 	}
 }
 

@@ -17,8 +17,6 @@ public:
 	EnterRoomTask(){}
 	EnterRoomTask(outFunc lock_print) :task_print(lock_print){}
 	EnterRoomTask(outFunc lock_print,Room_Time rt) :task_print(lock_print),rt(rt) {}
-
-	int getRoomId() { return room_id; }
 	void setRoom(int room);
 	void setRoomAndTime(Room_Time rt) {
 		this->rt = rt;
@@ -27,7 +25,6 @@ public:
 		rt = this->rt;
 	}
 	Room_Time rt;
-	int room_id;
 private:
 	outFunc task_print;
 

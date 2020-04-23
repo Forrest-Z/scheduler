@@ -6,6 +6,7 @@
 
 using namespace std;
 
+
 void Robot::run()
 {
 	while (running)

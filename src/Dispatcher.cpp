@@ -54,7 +54,7 @@ void Dispatcher::CreateRandomTasks(int num,time_t start_time) {
 
 
 bool Dispatcher::CompareTaskCost(pair<EnterRoomTask*, int> &pair1, pair<EnterRoomTask*, int> &pair2) {
-	return pair1.second > pair2.second;
+	return pair1.second > pair2.second;  // hiher cost means lower periority 
 }
 
 void Dispatcher::AssignTaskToRobot(Robot* robot) {
@@ -122,8 +122,8 @@ void Dispatcher::AddTask(EnterRoomTask* task)
 	if (!robot_queue.empty()) {
 		
 		Robot* robot = robot_queue.front();
-		
-		AssignTaskToRobot(robot); //assign a tassk to this robot
+		//robot->setTask(task);
+		//AssignTaskToRobot(robot); //assign a tassk to this robot
 		condition_variable* cv;
 		robot->getCondition(cv);
 		cv->notify_one();  // unblock one waiting threads.

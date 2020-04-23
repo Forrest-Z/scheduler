@@ -15,9 +15,9 @@ class Robot {
 	typedef void (*outFunc)(string s); // function pointer to lock_print function
 
 public:
-	Robot() :id(0), task(nullptr), robot_print(nullptr), has_task(false), running(true) { ulock = unique_lock<mutex>(mtx); }
-	Robot(int id, outFunc lock_print) :id(id), task(nullptr), robot_print(lock_print), has_task(false), running(true) { ulock = unique_lock<mutex>(mtx); }
-	Robot(int id, EnterRoomTask* task, outFunc lock_print):id(id),task(task), robot_print(lock_print), has_task(false), running(true) { ulock = unique_lock<mutex>(mtx); }
+	Robot():Robot(0,nullptr,nullptr){}
+	Robot(int id, outFunc lock_print) :Robot(id, nullptr, lock_print) {}
+	Robot(int id, EnterRoomTask* task, outFunc lock_print):id(id),task(task), robot_print(lock_print), has_task(false), running(true),bettery_level(100) { ulock = unique_lock<mutex>(mtx); }
 	void run();
 	int getId() { return id; }
 	void setTask(EnterRoomTask* task) { this->task = task; this->has_task = true; }

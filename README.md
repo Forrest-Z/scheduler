@@ -27,7 +27,7 @@ cost = (3-1) + (14-8) = 7
 
 ### Improve cost calculation(TO DO)
 
-robot get possibility tables from centrolized poor.
+robot get possibility tables from centrolized poor? or rooms?.
 
 cost =  ¦È1 * occupation +  ¦È2 * hour different +  ¦È3* distance +  ¦È4 * bettery level 
 

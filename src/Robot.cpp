@@ -6,6 +6,25 @@
 
 using namespace std;
 
+Robot::Robot() :Robot(0, nullptr) {
+}
+Robot::Robot(int id, outFunc lock_print): Robot(id, new EnterRoomTask(), lock_print) {
+}
+Robot::Robot(int id, EnterRoomTask* task, outFunc lock_print) {
+	this->id = id;
+	this->task = task;
+	robot_print = lock_print;
+	has_task = false;
+	running = true;
+	bettery_level = 100; 
+	ulock = unique_lock<mutex>(mtx); 
+}
+
+void Robot::setTask(EnterRoomTask* task) { 
+	delete(this->task);
+	this->task = task;
+	this->has_task = true; 
+}
 
 void Robot::run()
 {

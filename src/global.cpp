@@ -3,6 +3,7 @@
 #include "stdio.h"
 #include <time.h>
 
+map<Occu_key, Occu_params> Util::occu_table;
 map<string, int>  Util::day_of_weeks_map;
 map<string, int> Util::monthes_map;
 std::string Util::day_of_weeks[7];
@@ -96,4 +97,35 @@ bool Util::GetDoorStatusFromFile(Room_Time rt, const char* path) {
 	}
 	ifs.close();
 	return false;
+}
+
+void Util::Generate_occupancy_table() {
+	int num_of_room = 5;
+	int start_hour = 9;
+	int end_hour = 20;
+	int occupancy_start = 12;
+	int occupancy_end = 18;
+
+	for (int i = 0; i < num_of_room; i++) { // all rooms
+		for (int j = 1; j < 6; j++) {// all weekdays ( all tasks are in weekdays)
+			for (int k = start_hour; k < end_hour; k++) { 
+				Occu_key key;
+				key.room_id = i;
+				key.day_of_week = j;
+				key.hour = k;
+
+				Occu_params value = { 0 };
+				if (k > 12 && k < 18) // room occupied between 12-18
+					value.occupancy_possibility = 100;
+				else
+					value.occupancy_possibility = 0;
+
+				 occu_table.insert(std::pair<Occu_key,Occu_params>(key, value));
+			}
+		}
+	}
+	
+
+	
+
 }

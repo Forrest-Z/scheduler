@@ -27,6 +27,7 @@ public:
 	static void CreateRandomTasks(int num, time_t start_time);
 	static bool CompareTaskCost(pair<EnterRoomTask*, int>& pair1, pair<EnterRoomTask*, int>& pair2);
 	static void AssignTaskToRobot(Robot* robot);
+	static int CalculateTaskCostForRobot(EnterRoomTask* task, Robot* robot);
 private:
 	static mutex robot_mutex;
 	static mutex task_mutex;

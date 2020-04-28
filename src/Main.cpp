@@ -40,18 +40,20 @@ int main()
 	start.tm_sec = 0;
 
 	Util util(&lock_print);
-	//util.Generate_simulation_door_status(5, 500,mktime(&start)); // create 500 measurements for 5 rooms
+	util.Generate_occupancy_table();
+	util.Generate_simulation_door_status(5, 500,mktime(&start)); // create 500 measurements for 5 rooms
 
 	signal(SIGINT, &sigint_handler);
 	lock_print("main thread start\n");
 
-	const int num_of_task = 30;
+	const int num_of_task = 10;
 	const int num_of_robot = 2;
 
 	Dispatcher dispatcher = Dispatcher::GetDispatcher();
-	dispatcher.init(num_of_robot, &lock_print);	 // create 2 robots and assign lock_print function
+	//dispatcher.init(num_of_robot, &lock_print);	 // create 2 robots and assign lock_print function
+	dispatcher.SetOut(&lock_print);
 	dispatcher.CreateRandomTasks(num_of_task, mktime(&start));
-	
+	dispatcher.CreateRobots(num_of_robot);
 	this_thread::sleep_for(chrono::seconds(5));
 
 	Dispatcher::stop();

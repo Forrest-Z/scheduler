@@ -38,7 +38,7 @@ void Dispatcher::CreateRandomTasks(int num,time_t start_time) {
 	int cnt = 0;
 	while(cnt < num) {
 		Room_Time rt;
-		long increase_sec = rand() * 18;
+		long increase_sec = rand() * 10;
 		rt.calendar_time = start_time + increase_sec;
 		rt.room_id = rand() % 5; // create a room id(0-4)
 		struct tm* t = localtime(&(rt.calendar_time));
@@ -52,29 +52,48 @@ void Dispatcher::CreateRandomTasks(int num,time_t start_time) {
 	}
 }
 
-
 bool Dispatcher::CompareTaskCost(pair<EnterRoomTask*, int> &pair1, pair<EnterRoomTask*, int> &pair2) {
 	return pair1.second > pair2.second;  // hiher cost means lower periority 
 }
 
-void Dispatcher::AssignTaskToRobot(Robot* robot) {
+int Dispatcher::CalculateTaskCostForRobot(EnterRoomTask* task, Robot* robot) {
 	double second_diff;
-	int cost, distance;
+	int cost, distance, occu;
+	struct tm t;
+	time_t carlendar_time = task->getCalendarTime();
+	time_t robot_time = robot->getCurrentTime();
+	second_diff = difftime(carlendar_time, robot->getCurrentTime()); // second different between robot time and task time
+	distance = abs(robot->getCurrentRoomId() - task->getRoomId()); // difference between room id 
+	
+	Occu_key key;
+	localtime_s(&t, &carlendar_time); // find occupancy possibility in table
+	key.room_id = task->getRoomId();
+	key.hour = t.tm_hour;
+	key.day_of_week = t.tm_wday;
+	Occu_params& params = Util::occu_table[key];
+	occu = params.occupancy_possibility;
+	
+	cost = distance + second_diff / 3600  +  (100 - occu); // distance + hour different -  occupancy possibility
+	return cost;
+}
+void Dispatcher::AssignTaskToRobot(Robot* robot) {
+	
 	vector<pair<EnterRoomTask*, int>> cost_vector;
 	deque<EnterRoomTask*>::iterator it = task_queue.begin();
 	while (it != task_queue.end()) {
-		second_diff = difftime((*it)->rt.calendar_time, robot->getCurrentTime()); // second different between robot time and task time
-		distance = abs(robot->getCurrentRoomId() - (*it)->rt.room_id); // difference between room id 
-		cost = distance + second_diff / 3600; // distance + hour different
-		cost_vector.push_back(make_pair((*it), cost)); // put task and cost in a vector
+		int cost = CalculateTaskCostForRobot(*it,robot);
+		cost_vector.push_back(make_pair(*it, cost)); // put task and cost in a vector
 		it++;
 	}
 	std::sort(cost_vector.begin(), cost_vector.end(), CompareTaskCost);
-	EnterRoomTask* task = cost_vector.back().first;
-	robot->setTask(task);
+	pair<EnterRoomTask*, int> task_cost = cost_vector.back();
+	
+	dispatcher_print("Give robot " + std::to_string(robot->id) + " task " +
+					std::to_string(task_cost.first->getTaskId()) + " cost " + std::to_string(task_cost.second) + "\n");
+	robot->setTask(task_cost.first);
 	
 	// find task in task queue and delete it
-	it = find(task_queue.begin(), task_queue.end(), task);
+	it = find(task_queue.begin(), task_queue.end(), task_cost.first);
 	task_queue.erase(it);
 	cost_vector.pop_back();
 	

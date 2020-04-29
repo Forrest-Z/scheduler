@@ -21,7 +21,6 @@ Robot::Robot(int id, EnterRoomTask* task, outFunc lock_print) {
 }
 
 void Robot::setTask(EnterRoomTask* task) { 
-	delete(this->task);
 	this->task = task;
 	this->has_task = true; 
 }
@@ -34,6 +33,9 @@ void Robot::run()
 			//task->getRoomAndTime(rt);
 			//bool status = getDoorStatusFromFile(rt, "../simulation/door_status_room_1.txt"); // measure door status
 			//task->process(id,status);
+			while (task->getCalendarTime() > Dispatcher::GetGlobalTime()) {
+				this_thread::sleep_for(chrono::microseconds(1000)); // wait for 1s
+			}
 			bool result = task->process(id);
 			if (!result) {		
 				Dispatcher::ReturnTask(task);

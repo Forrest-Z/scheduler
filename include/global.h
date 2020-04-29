@@ -2,6 +2,7 @@
 
 #include <string>
 #include <map>
+#include <thread>
 
 //#include "Robot.h"
 //#include "EnterRoomTask.h"
@@ -46,18 +47,21 @@ class Util {
 	
 public:
 	Util(outFunc out);
+	
 	static bool GetDoorStatusFromFile(Room_Time rt, const char* path);
+	static void Generate_simulation_door_status(int num_of_rooms, int num_of_measurements, time_t start_time);
+	static void Generate_occupancy_table();
+	
 	static map<string, int>  day_of_weeks_map;
 	static map<string,int> monthes_map;
 	//static bool Compare(const Occu_key first, const Occu_key second);
 	static map<Occu_key,Occu_params> occu_table;
 	static std::string day_of_weeks[7];
 	static std::string monthes[13];
-	static void Generate_simulation_door_status(int num_of_rooms, int num_of_measurements, time_t start_time);
-	static void Generate_occupancy_table();
+
 	static time_t start_time;
 	static const long TASK_DELAY_SEC = 10800; // 3 hours
 private:
 	static outFunc global_print;
-
+	
 };

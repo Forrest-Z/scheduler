@@ -2,6 +2,7 @@
 #include <fstream>
 #include "stdio.h"
 #include <time.h>
+#include <thread>
 
 map<Occu_key, Occu_params> Util::occu_table;
 map<string, int>  Util::day_of_weeks_map;
@@ -10,6 +11,8 @@ std::string Util::day_of_weeks[7];
 std::string monthes[13];
 outFunc Util::global_print;
 time_t Util::start_time;
+
+using namespace std;
 
 Util::Util(outFunc out){
 	global_print = out;

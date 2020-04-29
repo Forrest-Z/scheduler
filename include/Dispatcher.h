@@ -26,9 +26,18 @@ public:
 	static void CreateRobots(int num);
 	static void CreateRandomTasks(int num, time_t start_time);
 	static bool CompareTaskCost(pair<EnterRoomTask*, int>& pair1, pair<EnterRoomTask*, int>& pair2);
-	static void AssignTaskToRobot(Robot* robot);
+	static bool AssignTaskToRobot(Robot* robot);
 	static int CalculateTaskCostForRobot(EnterRoomTask* task, Robot* robot);
+	static void StartTimer(time_t start_time);
+	static void StopTimer();
+	static void Timer();
+	static time_t GetGlobalTime();
 private:
+	static void IncreaseGlobalTime(time_t second);
+	static void SetGlobalTime(time_t time);
+	static thread* timer_thread;
+	static time_t global_time;
+	static mutex timer_mutex;
 	static mutex robot_mutex;
 	static mutex task_mutex;
 	static outFunc dispatcher_print;

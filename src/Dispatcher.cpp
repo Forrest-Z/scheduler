@@ -8,12 +8,15 @@ using namespace std;
 
 mutex Dispatcher::robot_mutex;
 mutex Dispatcher::task_mutex;
+mutex Dispatcher::timer_mutex;
 Dispatcher Dispatcher::dispatcher;
 outFunc Dispatcher::dispatcher_print;
 queue<Robot*> Dispatcher::robot_queue; // Store waiting robot
 deque<EnterRoomTask*> Dispatcher::task_queue; // Store to do task 
 vector<Robot*>Dispatcher::AllRobots; // Store robots created by dispatcher init process
 vector<thread*> Dispatcher::threads; // Store threads created by dispatcher init process
+thread* Dispatcher::timer_thread;
+time_t Dispatcher::global_time;
 
 void Dispatcher::init(int num, outFunc out)
 {
@@ -34,11 +37,31 @@ void Dispatcher::CreateRobots(int num) {
 	dispatcher_print("Dispatcher: Create " + std::to_string(num) + " robots\n");
 }
 
+
+void Dispatcher::StartTimer(time_t start_time) {
+	SetGlobalTime(start_time);
+	timer_thread = new thread(&Timer);
+}
+
+void Dispatcher::Timer() {
+	dispatcher_print("Timer running\n");
+	while (true) {
+		IncreaseGlobalTime(10800); // increase global timer a hour
+		this_thread::sleep_for(chrono::seconds(1));  // threadsleep for 2 second
+	}
+}
+
+void Dispatcher::StopTimer() {
+	dispatcher_print("Timer stoped\n");
+	timer_thread->join();
+}
+
 void Dispatcher::CreateRandomTasks(int num,time_t start_time) {
 	int cnt = 0;
 	while(cnt < num) {
 		Room_Time rt;
-		long increase_sec = rand() * 10;
+		char buf[50];
+		long increase_sec = rand() * 8;
 		rt.calendar_time = start_time + increase_sec;
 		rt.room_id = rand() % 5; // create a room id(0-4)
 		struct tm* t = localtime(&(rt.calendar_time));
@@ -47,6 +70,9 @@ void Dispatcher::CreateRandomTasks(int num,time_t start_time) {
 			EnterRoomTask* task = new EnterRoomTask(dispatcher_print);
 			task->setRoomAndTime(rt);
 			Dispatcher::AddTask(task);
+			ctime_s(buf, sizeof(buf), &rt.calendar_time);
+			dispatcher_print("Create Task " + std::to_string(task->getTaskId()) +
+					" room " + std::to_string(task->getRoomId()) + " " +  buf);
 			cnt++;
 		}
 	}
@@ -61,8 +87,8 @@ int Dispatcher::CalculateTaskCostForRobot(EnterRoomTask* task, Robot* robot) {
 	int cost, distance, occu;
 	struct tm t;
 	time_t carlendar_time = task->getCalendarTime();
-	time_t robot_time = robot->getCurrentTime();
-	second_diff = difftime(carlendar_time, robot->getCurrentTime()); // second different between robot time and task time
+	time_t global_time = GetGlobalTime();
+	second_diff = difftime(carlendar_time, global_time); // second different between robot time and task time
 	distance = abs(robot->getCurrentRoomId() - task->getRoomId()); // difference between room id 
 	
 	Occu_key key;
@@ -73,17 +99,23 @@ int Dispatcher::CalculateTaskCostForRobot(EnterRoomTask* task, Robot* robot) {
 	Occu_params& params = Util::occu_table[key];
 	occu = params.occupancy_possibility;
 	
-	cost = distance + second_diff / 3600  +  (100 - occu); // distance + hour different -  occupancy possibility
+	cost = distance + second_diff / 3600  +  (100 - occu); // distance + hour different  + 100 -  occupancy possibility
 	return cost;
 }
-void Dispatcher::AssignTaskToRobot(Robot* robot) {
+bool Dispatcher::AssignTaskToRobot(Robot* robot) {
 	
 	vector<pair<EnterRoomTask*, int>> cost_vector;
 	deque<EnterRoomTask*>::iterator it = task_queue.begin();
 	while (it != task_queue.end()) {
-		int cost = CalculateTaskCostForRobot(*it,robot);
-		cost_vector.push_back(make_pair(*it, cost)); // put task and cost in a vector
+
+		if ((*it)->getCalendarTime() >Dispatcher::GetGlobalTime()) { // only look at task which later than current time
+			int cost = CalculateTaskCostForRobot(*it, robot);
+			cost_vector.push_back(make_pair(*it, cost)); // put task and cost in a vector		
+		}
 		it++;
+	}
+	if (cost_vector.empty()) {
+		return false; // if no available task ( all tasks are old tasks), return false
 	}
 	std::sort(cost_vector.begin(), cost_vector.end(), CompareTaskCost);
 	pair<EnterRoomTask*, int> task_cost = cost_vector.back();
@@ -96,17 +128,18 @@ void Dispatcher::AssignTaskToRobot(Robot* robot) {
 	it = find(task_queue.begin(), task_queue.end(), task_cost.first);
 	task_queue.erase(it);
 	cost_vector.pop_back();
+	return true;
 	
 }
 bool Dispatcher::AddRobot(Robot* robot)
 {
 	bool wait = false;
-	
+
 	task_mutex.lock();
 
 	if (!task_queue.empty()) {
 		// Get every task in task queue
-		AssignTaskToRobot(robot);
+		wait = !AssignTaskToRobot(robot);
 		task_mutex.unlock();
 	}
 	else {
@@ -142,7 +175,7 @@ void Dispatcher::AddTask(EnterRoomTask* task)
 		
 		Robot* robot = robot_queue.front();
 		//robot->setTask(task);
-		//AssignTaskToRobot(robot); //assign a tassk to this robot
+		AssignTaskToRobot(robot); //assign a tassk to this robot
 		condition_variable* cv;
 		robot->getCondition(cv);
 		cv->notify_one();  // unblock one waiting threads.
@@ -162,14 +195,33 @@ void Dispatcher::AddTask(EnterRoomTask* task)
 
 void Dispatcher::stop()
 {
+	dispatcher_print("Dispatcher stop\n");
+	StopTimer();
 	for (int i = 0; i < threads.size(); i++) {
 		threads[i]->join();
 	}
+	
 }
 
-//
-//void Dispatcher::SortTaskQueue() {
-//
-//	sort(task_queue.begin(), task_queue.end(),compare);
-//}
+
+void Dispatcher::SetGlobalTime(time_t time) {
+	timer_mutex.lock();
+	global_time = time;
+	timer_mutex.unlock();
+}
+
+void Dispatcher::IncreaseGlobalTime(time_t second) {
+	timer_mutex.lock();
+	global_time += second;
+	dispatcher_print(ctime(&global_time));
+	timer_mutex.unlock();
+}
+
+time_t Dispatcher::GetGlobalTime() {
+	time_t ret;
+	timer_mutex.lock();
+	ret = global_time;
+	timer_mutex.unlock();
+	return ret;
+}
 

@@ -17,24 +17,59 @@ It is a Visual studio CMake program
 
 ### How to calculate cost:
 
-cost =  distance + hour different;
+Cost Function
+~~~
+cost =  ¦È1 * occupation possibility+  ¦È2 * hour different +  ¦È3* distance
 
-last task room 1, Fri Apr 10 08:00:00 2020
+cost =   (100 - occupation possibility) + hour different  + distance; 
+~~~
+Example: 
+~~~
+last task  task 607 room 0, Tue Apr 7 15:02:08 2020
 
-calculate cost for task room 3, Fri Apr 10 14:00:00 2020
+calculate cost for task 453 room 1 Tue Apr 7 17:38:48 2020
 
-cost = (3-1) + (14-8) = 7
+global time 17
 
-### Improve cost calculation(TO DO)
+cost = (100-100) + (17:38 - 17 ) + 1 = 1
+~~~
+robot get a occupation possibility from global occupation map.
 
-robot get possibility tables from centrolized poor? or rooms?.
+initial occupation map: 
+* Occupation possibility = 100 ( 12 noon to 18 pm)
+									= 0 (other time)
+* Ocupation map detail
 
-cost =  ¦È1 * occupation +  ¦È2 * hour different +  ¦È3* distance +  ¦È4 * bettery level 
+~~~
+typedef struct Occu_key { // key
+	int room_id;
+	int day_of_week;
+	int hour;
+...
+}
 
+typedef struct Occu_params { // value
+	int closed_count;
+	int opened_count;
+	int occupancy_possibility;
+...
+}
+~~~
 
-Program result:
+rule(?): 
+* what decrease cost: office occupied, small hour different
+* what increase cost: office not occupied, bigger hour different, longer distance
 
-![result](./image/result1.png)
+### TO DO
+
+when robot find door is close, robot should update occupancy map (opened_count and possibility)_)
+periority
+
+cost =  ¦È1 * occupation possibility+  ¦È2 * hour different +  ¦È3* distance +  ¦È4 * bettery level +¦È5* Task periority
+
+### Program result:
+
+![result](./image/result_with_timer.png)
 
 
 ### Detail work flow

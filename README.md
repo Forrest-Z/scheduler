@@ -19,9 +19,9 @@ It is a Visual studio CMake program
 
 Cost Function
 ~~~
-cost =  ¦È1 * occupation possibility+  ¦È2 * hour different +  ¦È3* distance
+cost =  ¦È1 * occupation possibility+  ¦È2 * hour different +  ¦È3* distance + ¦È4* task priority + ¦È5 * task priority + ¦È6
 
-cost =   (100 - occupation possibility) + hour different  + distance; 
+cost =   (100 - occupation possibility) + hour different  + distance + 10 * (highest priority - task priority); 
 ~~~
 Example: 
 ~~~
@@ -33,6 +33,7 @@ global time 17
 
 cost = (100-100) + (17:38 - 17 ) + 1 = 1
 ~~~
+
 robot get a occupation possibility from global occupation map.
 
 initial occupation map: 
@@ -56,21 +57,15 @@ typedef struct Occu_params { // value
 }
 ~~~
 
-rule(?): 
-* what decrease cost: office occupied, small hour different
-* what increase cost: office not occupied, bigger hour different, longer distance
-
 ### TO DO
 
 when robot find door is close, robot should update occupancy map (opened_count and possibility)_)
-periority
-
-cost =  ¦È1 * occupation possibility+  ¦È2 * hour different +  ¦È3* distance +  ¦È4 * bettery level +¦È5* Task periority
+return task before task running
+better simulation and possibility table
 
 ### Program result:
 
 ![result](./image/result_with_timer.png)
-
 
 ### Detail work flow
 

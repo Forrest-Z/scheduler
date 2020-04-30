@@ -62,6 +62,7 @@ void Dispatcher::CreateRandomTasks(int num,time_t start_time) {
 		Room_Time rt;
 		char buf[50];
 		long increase_sec = rand() * 8;
+		int priority = rand()%4 +1; // priority 1-5
 		rt.calendar_time = start_time + increase_sec;
 		rt.room_id = rand() % 5; // create a room id(0-4)
 		struct tm* t = localtime(&(rt.calendar_time));
@@ -69,10 +70,11 @@ void Dispatcher::CreateRandomTasks(int num,time_t start_time) {
 			// filter task on Monday to Friday from 9 am to 20 pm
 			EnterRoomTask* task = new EnterRoomTask(dispatcher_print);
 			task->setRoomAndTime(rt);
+			task->setTaskPriority(priority);
 			Dispatcher::AddTask(task);
 			ctime_s(buf, sizeof(buf), &rt.calendar_time);
-			dispatcher_print("Create Task " + std::to_string(task->getTaskId()) +
-					" room " + std::to_string(task->getRoomId()) + " " +  buf);
+			dispatcher_print("Create Task " + std::to_string(task->getTaskId()) + " priority " + 
+				std::to_string(task->getPriority()) +	" room " + std::to_string(task->getRoomId()) + " " +  buf);
 			cnt++;
 		}
 	}
@@ -99,13 +101,14 @@ int Dispatcher::CalculateTaskCostForRobot(EnterRoomTask* task, Robot* robot) {
 	Occu_params& params = Util::occu_table[key];
 	occu = params.occupancy_possibility;
 	
-	cost = distance + second_diff / 3600  +  (100 - occu); // distance + hour different  + 100 -  occupancy possibility
+	cost = (5- task->getPriority()) * 10 + (100 - robot->getBettery_level()) + distance + second_diff / 3600  +  100 - occu; // distance + hour different  + 100 -  occupancy possibility
 	return cost;
 }
 bool Dispatcher::AssignTaskToRobot(Robot* robot) {
 	
 	vector<pair<EnterRoomTask*, int>> cost_vector;
 	deque<EnterRoomTask*>::iterator it = task_queue.begin();
+	char buf[100];
 	while (it != task_queue.end()) {
 
 		if ((*it)->getCalendarTime() >Dispatcher::GetGlobalTime()) { // only look at task which later than current time
@@ -120,8 +123,9 @@ bool Dispatcher::AssignTaskToRobot(Robot* robot) {
 	std::sort(cost_vector.begin(), cost_vector.end(), CompareTaskCost);
 	pair<EnterRoomTask*, int> task_cost = cost_vector.back();
 	
-	dispatcher_print("Give robot " + std::to_string(robot->id) + " task " +
-					std::to_string(task_cost.first->getTaskId()) + " cost " + std::to_string(task_cost.second) + "\n");
+	sprintf(buf, "Robot %d(bettery  %d%%)  get task %d cost %d from centralized poor\n",
+	robot->id, robot->getBettery_level(),task_cost.first->getTaskId(), task_cost.second);
+	dispatcher_print(buf);
 	robot->setTask(task_cost.first);
 	
 	// find task in task queue and delete it
@@ -175,7 +179,7 @@ void Dispatcher::AddTask(EnterRoomTask* task)
 		
 		Robot* robot = robot_queue.front();
 		//robot->setTask(task);
-		AssignTaskToRobot(robot); //assign a tassk to this robot
+		//AssignTaskToRobot(robot); //assign a tassk to this robot
 		condition_variable* cv;
 		robot->getCondition(cv);
 		cv->notify_one();  // unblock one waiting threads.

@@ -40,6 +40,7 @@ void Robot::run()
 			if (!result) {		
 				Dispatcher::ReturnTask(task);
 			}
+			bettery_level -= 1;  //bettery level decrease 1
 			has_task = false;
 		}
 		if (Dispatcher::AddRobot(this)) {

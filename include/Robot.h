@@ -24,13 +24,14 @@ public:
 	void getCondition(condition_variable* &cv) { cv = &(this)->cv; }
 	void Write_data_in_occ_map(int room_id, int time, int day_of_week);
 	bool getDoorStatusFromFile(int room, int time, int day_of_week, const char* path);
+	int getBettery_level() { return bettery_level; }
+	EnterRoomTask* task;
+	int getCurrentRoomId() { return task->rt.room_id; }
+	time_t getCurrentTime() { return task->rt.calendar_time; } // start time if does't have a current task
 	int bettery_level;
 	int id;
 	bool has_task;
 	bool running;
-	EnterRoomTask* task;
-	int getCurrentRoomId() { return task->rt.room_id; }
-	time_t getCurrentTime() { return task->rt.calendar_time; } // start time if does't have a current task
 private:
 	
 	

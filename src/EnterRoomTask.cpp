@@ -8,23 +8,22 @@
 #include <strstream>
 using namespace std;
 
-EnterRoomTask::EnterRoomTask() {
-	this->task_print = nullptr;
-	this->rt = { 0,Util::start_time };
-	this->task_id = rand() % 900 + 100;
+EnterRoomTask::EnterRoomTask():EnterRoomTask(nullptr) {
 }
 
 EnterRoomTask::EnterRoomTask(outFunc out, Room_Time rt) {
 	this->task_print = out;
+	this->priority = 0;
 	this->rt = rt;
 	this->task_id = rand() % 900 + 100;
 }
 
 EnterRoomTask::EnterRoomTask(outFunc out)
 {
-	this->task_print = out;
 	this->rt = { 0,Util::start_time };
 	this->task_id = rand() % 900 + 100;
+	this->task_print = out;
+	this->priority = 0;
 }
 
 

@@ -19,20 +19,11 @@ It is a Visual studio CMake program
 
 Cost Function
 ~~~
-cost =  ¦È1 * occupation possibility+  ¦È2 * hour different +  ¦È3* distance + ¦È4* task priority + ¦È5 * task priority + ¦È6
+cost =  ¦È1 * occupation possibility+  ¦È2 * hour different +  ¦È3* distance + ¦È4* task priority + ¦È5 * battery level + ¦È6
 
-cost =   (100 - occupation possibility) + hour different  + distance + 10 * (highest priority - task priority); 
+cost =   (100 - occupation possibility) + hour different  + distance + 10 * (highest priority - task priority) + (100-battery level); 
 ~~~
-Example: 
-~~~
-last task  task 607 room 0, Tue Apr 7 15:02:08 2020
 
-calculate cost for task 453 room 1 Tue Apr 7 17:38:48 2020
-
-global time 17
-
-cost = (100-100) + (17:38 - 17 ) + 1 = 1
-~~~
 
 robot get a occupation possibility from global occupation map.
 

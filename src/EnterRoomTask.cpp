@@ -34,8 +34,8 @@ bool EnterRoomTask::process(int robot_id)
 	strstream stream;
 	sprintf_s(path, "../simulation/door_status_room_%d.txt", rt.room_id);
 	status = Util::GetDoorStatusFromFile(rt, path);
-	sprintf_s(buf,"[Robot %d] [task %.3d] [room %d] [door %s] %s",robot_id,
-		this->task_id, rt.room_id, status ? "opened" : "closed", ctime(&rt.calendar_time));
+	sprintf_s(buf,"[Robot %d] [task %.3d] [periority %d] [room %d] [door %s] %s",robot_id,
+		this->task_id, this->priority,rt.room_id,status ? "opened" : "closed", ctime(&rt.calendar_time));
 	task_print(buf);
 	return status; // return door status
 }

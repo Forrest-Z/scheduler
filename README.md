@@ -1,63 +1,52 @@
-It is a Visual studio CMake program
+Robot Scheduler CMake
 
+A simple Visual studio CMake multi-thread program that simulate robot task scheduling.
 
+An advance robot task scheduling project: [Master Thesis: Exploiting Knowledge of Room Occupation for the Scheduling of Navigation Tasks of a Fleet of Robots in Office Environments](https://github.com/xuanjiao/Robots_task_scheduling)
 
+# Requirement
+
+* MS Visual Studio 2019
+* MS C++ CMake tools for Windows
+
+# Installation
+
+```
+
+git clone https://github.com/xuanjiao/scheduler.git
+
+```
+
+# Explanation:
+
+## Structure
+
+The program consists of a main thread, multiple robot threads and a global task vector.
 
 **Main Thread** It creates task and store them in Global task vector.
 
-**Global task vector** Simulation of centrolized poor
+**Global task vector** Simulation of centralized pool
 
-**Robot Thread**  Simulation of robot. It caculates the cost of each task in vector and chooses the one with lower cost
+**Robot Thread**  Simulation of robot. It calculates the cost of each task in vector and chooses the one with lower cost
 
-
-
-### Structure:
 
 ![robot](./image/scheduler-structure.png)
 
-### How to calculate cost:
+## Task cost calculation by Robot
 
 Cost Function
-~~~
-cost =  ¦È1 * occupation possibility+  ¦È2 * hour different +  ¦È3* distance + ¦È4* task priority + ¦È5 * battery level + ¦È6
-
-cost =   (100 - occupation possibility) + hour different  + distance + 10 * (highest priority - task priority) + (100-battery level); 
-~~~
-
-
-robot get a occupation possibility from global occupation map.
-
-initial occupation map: 
-* Occupation possibility = 100 ( 12 noon to 18 pm)
-									= 0 (other time)
-* Ocupation map detail
 
 ~~~
-typedef struct Occu_key { // key
-	int room_id;
-	int day_of_week;
-	int hour;
-...
-}
+cost = w1 * occupation probability+  w2 * hour different +  w3* distance + w4* task priority + w5 * battery level + w6
 
-typedef struct Occu_params { // value
-	int closed_count;
-	int opened_count;
-	int occupancy_possibility;
-...
-}
+In this project, we assumed:
+cost =   (100 - occupation probability) + hour different  + distance + 10 * (highest priority - task priority) + (100-battery level); 
 ~~~
 
-### TO DO
-
-when robot find door is close, robot should update occupancy map (opened_count and possibility)_)
-return task before task running
-better simulation and possibility table
-
-### Program result:
-
-![result](./image/result_with_timer.png)
-
-### Detail work flow
+## Detail work flow
 
 ![scheduler](./image/scheduler-detail_work_flow.png)
+
+## Program result:
+
+![result](./image/result_with_timer.png)
